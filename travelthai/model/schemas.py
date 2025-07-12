@@ -16,3 +16,11 @@ class RegistrationRead(BaseModel):
     target_province: str
     class Config:
         from_attributes = True
+
+class ProvinceRead(BaseModel):
+    id: int
+    name: str
+    is_secondary: int
+    tax_reduction: float
+    class Config:
+        from_attributes = True
