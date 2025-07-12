@@ -8,6 +8,9 @@ router = APIRouter()
 
 @router.post("/register", response_model=schemas.RegistrationRead)
 def register_travel(info: schemas.RegistrationCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
+    existing = db.query(travel.Registration).filter(travel.Registration.citizen_id == info.citizen_id).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Citizen ID already registered")
     db_reg = travel.Registration(
         user_id=user.id,
         full_name=info.full_name,
@@ -37,3 +40,11 @@ def get_tax_reduction(province_id: int, db: Session = Depends(get_db)):
     if not province:
         raise HTTPException(status_code=404, detail="Province not found")
     return {"province": province.name, "tax_reduction": province.tax_reduction, "is_secondary": province.is_secondary}
+
+@router.get("/registers", response_model=list[schemas.RegistrationRead])
+def get_all_registrations(db: Session = Depends(get_db)):
+    return db.query(travel.Registration).all()
+
+@router.get("/registers/user/{user_id}", response_model=list[schemas.RegistrationRead])
+def get_registrations_by_user(user_id: int, db: Session = Depends(get_db)):
+    return db.query(travel.Registration).filter(travel.Registration.user_id == user_id).all()
