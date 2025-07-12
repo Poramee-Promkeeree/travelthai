@@ -1,6 +1,15 @@
 from fastapi import FastAPI
+from .auth import auth_router
+from .database import Base, engine
+from . import models
+from .router.travel import router as travel_router
+
+# Create tables
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
+app.include_router(travel_router, prefix="/travel", tags=["travel"])
 
 @app.get("/")
 def read_root():
