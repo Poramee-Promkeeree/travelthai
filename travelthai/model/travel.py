@@ -6,7 +6,7 @@ class Registration(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, index=True, nullable=False)
     full_name = Column(String, nullable=False)
-    citizen_id = Column(String, unique=True, nullable=False)
+    citizen_id = Column(String, nullable=False)  # เอา unique ออก
     phone = Column(String, nullable=False)
     target_province = Column(String, nullable=False)
 
@@ -25,7 +25,6 @@ def seed_provinces(db):
         {"name": "Loei", "is_secondary": 1, "tax_reduction": 10.0},
         {"name": "Trang", "is_secondary": 1, "tax_reduction": 10.0},
         {"name": "Phatthalung", "is_secondary": 1, "tax_reduction": 10.0},
-        # เพิ่มจังหวัดอื่น ๆ ตามต้องการ
     ]
     for p in provinces:
         exists = db.query(Province).filter(Province.name == p["name"]).first()

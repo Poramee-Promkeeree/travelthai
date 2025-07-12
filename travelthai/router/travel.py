@@ -8,9 +8,6 @@ router = APIRouter()
 
 @router.post("/register", response_model=schemas.RegistrationRead)
 def register_travel(info: schemas.RegistrationCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    existing = db.query(travel.Registration).filter(travel.Registration.citizen_id == info.citizen_id).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Citizen ID already registered")
     db_reg = travel.Registration(
         user_id=user.id,
         full_name=info.full_name,
