@@ -5,7 +5,8 @@ from passlib.context import CryptContext
 from jose import jwt
 from datetime import datetime, timedelta
 
-from . import models, schemas
+from travelthai.schemas.schema import UserCreate, UserRead
+from . import models
 from .database import get_db
 
 SECRET_KEY = "your-secret-key"
@@ -28,8 +29,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-@auth_router.post("/register", response_model=schemas.UserRead)
-def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+@auth_router.post("/register", response_model=UserRead)
+def register(user: UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
